@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="public">
+      <UniqueIdentifier>{b2fb3153-d7ba-4ebc-9486-2b60912bf7c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="private">
+      <UniqueIdentifier>{cb2260ca-3ab9-45d3-9a15-05c45322f2d0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\public\game.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="source\public\timer.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="source\public\console_util.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="source\public\assert.h">
+      <Filter>public</Filter>
+    </ClInclude>
+    <ClInclude Include="source\public\matrix.h">
+      <Filter>public</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\private\main.c">
+      <Filter>private</Filter>
+    </ClCompile>
+    <ClCompile Include="source\private\console_util.c">
+      <Filter>private</Filter>
+    </ClCompile>
+    <ClCompile Include="source\private\timer.c">
+      <Filter>private</Filter>
+    </ClCompile>
+    <ClCompile Include="source\private\matrix.c">
+      <Filter>private</Filter>
+    </ClCompile>
+    <ClCompile Include="source\private\game.c">
+      <Filter>private</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

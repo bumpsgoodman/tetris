@@ -80,12 +80,28 @@ void update_game(game_t* p_game)
         return;
     }
 
-    // 잔상 지우기
-    try_block_to_board(p_game, &p_game->block_pos, p_game->block_offsets, BOARD_STATE_SPACE);
+    // 그림자 그리기
+    {
+        static int_vec2_t shadow_pos;
+        static int_vec2_t shadow_offsets[NUM_OFFSETS];
+
+        try_block_to_board(p_game, &shadow_pos, shadow_offsets, BOARD_STATE_SPACE);
+
+        shadow_pos.x = p_game->block_pos.x;
+        shadow_pos.y = p_game->block_pos.y;
+        memcpy(shadow_offsets, p_game->block_offsets, sizeof(int_vec2_t) * NUM_OFFSETS);
+        do
+        {
+            try_block_to_board(p_game, &shadow_pos, shadow_offsets, BOARD_STATE_SPACE);
+            ++shadow_pos.y;
+        } while (try_block_to_board(p_game, &shadow_pos, shadow_offsets, BOARD_STATE_SHADOW));
+        --shadow_pos.y;
+        try_block_to_board(p_game, &shadow_pos, shadow_offsets, BOARD_STATE_SHADOW);
+    }
 
     int_vec2_t next_pos = p_game->block_pos;
 
-    // 떨어지는 주기가 되면 떨어뜨리기
+    // 떨어지는 주기가 되면 떨어뜨리기 
     update_timer(&p_game->fall_timer);
     if (is_on_tick_timer(&p_game->fall_timer))
     {
@@ -107,18 +123,15 @@ void update_game(game_t* p_game)
         {
             --next_pos.x;
         }
-
-        if (s_right_key_state == KEY_STATE_DOWN)
+        else if (s_right_key_state == KEY_STATE_DOWN)
         {
             ++next_pos.x;
         }
-
-        if (s_down_key_state == KEY_STATE_DOWN)
+        else if (s_down_key_state == KEY_STATE_DOWN)
         {
             ++next_pos.y;
         }
-
-        if (s_up_key_state == KEY_STATE_DOWN)
+        else if (s_up_key_state == KEY_STATE_DOWN)
         {
             if (p_game->blocks[p_game->block_index] != BLOCK_O)
             {
@@ -128,9 +141,9 @@ void update_game(game_t* p_game)
                 }
             }
         }
-
-        if (s_space_key_state == KEY_STATE_DOWN)
+        else if (s_space_key_state == KEY_STATE_DOWN)
         {
+            next_pos.y = p_game->block_pos.y;
             do
             {
                 try_block_to_board(p_game, &next_pos, p_game->block_offsets, BOARD_STATE_SPACE);
@@ -139,25 +152,6 @@ void update_game(game_t* p_game)
 
             p_game->block_pos.y = next_pos.y - 1;
         }
-    }
-
-    // 그림자 그리기
-    {
-        static int_vec2_t shadow_pos;
-        static int_vec2_t shadow_offsets[NUM_OFFSETS];
-
-        try_block_to_board(p_game, &shadow_pos, shadow_offsets, BOARD_STATE_SPACE);
-
-        shadow_pos.x = p_game->block_pos.x;
-        shadow_pos.y = p_game->block_pos.y;
-        memcpy(shadow_offsets, p_game->block_offsets, sizeof(int_vec2_t) * NUM_OFFSETS);
-        do
-        {
-            try_block_to_board(p_game, &shadow_pos, shadow_offsets, BOARD_STATE_SPACE);
-            ++shadow_pos.y;
-        } while (try_block_to_board(p_game, &shadow_pos, shadow_offsets, BOARD_STATE_SHADOW));
-        --shadow_pos.y;
-        try_block_to_board(p_game, &shadow_pos, shadow_offsets, BOARD_STATE_SHADOW);
     }
 
     // 블럭 그리기
@@ -178,7 +172,7 @@ void update_game(game_t* p_game)
     }
 
     p_game->block_pos = next_pos;
-}
+} 
 
 void draw_game(const game_t* p_game)
 {
@@ -394,7 +388,7 @@ static bool rotate(game_t* p_game)
         { { 1, 2 }, { 2, -1 }, { -1, -2 }, { -2, 1 } },
     };
 
-    const int_mat2_t ROTATE90_MAT_TR = { { 0, 1 }, { -1, 0 } };
+    static const int_mat2_t ROTATE90_MAT_TR = { { 0, 1 }, { -1, 0 } };
     int_vec2_t result_offsets[NUM_OFFSETS] = { 0, };
 
     const block_t block = p_game->blocks[p_game->block_index];
